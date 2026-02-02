@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: embers
+  namespace: embers
+  labels:
+    app: embers
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  selector:
+    app: embers

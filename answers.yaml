@@ -1,0 +1,22 @@
+OTEL Endpoint Configuration:
+What format should the endpoint be? (e.g., http://alloy:4318 for HTTP, alloy:4317 for gRPC?) -- it should take a configuration object. IN my case alloy.sparks.majerus.dev 
+Should this be configurable via environment variable? -- in the deployment 
+Flame Behavior & Observability Correlation:
+Should the number of flames directly affect the volume of logs/metrics/traces generated? (More flames = more data?)
+Or should it generate a constant "lot" of data regardless? -- I think it should go based flame more flame more volume
+Observability Data Details:
+For traces: Should each flame render/animation create trace spans? Or just background operations? -- your call
+For logs: Should these be structured JSON logs or plain text? Any specific log levels distribution? -- dont care 
+For metrics: What metrics matter? (e.g., flame_count, render_duration, click_rate?) -- run time, flame count, rander, and throw some other random ones in there. 
+Architecture:
+Single container with embedded frontend? Or separate frontend/backend?
+Language preference? (I'm thinking Node.js/Express + vanilla JS/Canvas for simplicity, or Go + static files?) -- great 
+Kubernetes Specifics:
+Do you need an Ingress resource, or just a Service (LoadBalancer/NodePort)? -- ingresss
+Any namespace preference?
+Resource limits you want set?
+Delivery Protocol:
+Should observability data be pushed to the OTEL endpoint, scraped by Alloy (Prometheus metrics), or both? - both?
+Let me know your preferences, or I can make reasonable default choices and build something opinionated!
+
+You pick the rest

@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: embers
+  namespace: embers
+  labels:
+    app: embers
+  annotations:
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - embers.sparks.majerus.dev
+    secretName: sparks-wildcard-tls
+  rules:
+  - host: embers.sparks.majerus.dev
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: embers
+            port:
+              number: 80

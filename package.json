@@ -1,0 +1,29 @@
+{
+  "name": "embers",
+  "version": "1.0.0",
+  "description": "Observability test generator with animated flames",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["observability", "opentelemetry", "loki", "mimir", "tempo"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "@opentelemetry/api": "^1.7.0",
+    "@opentelemetry/sdk-node": "^0.45.1",
+    "@opentelemetry/auto-instrumentations-node": "^0.40.3",
+    "@opentelemetry/exporter-metrics-otlp-http": "^0.45.1",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.45.1",
+    "@opentelemetry/exporter-logs-otlp-http": "^0.45.1",
+    "@opentelemetry/sdk-metrics": "^1.18.1",
+    "@opentelemetry/sdk-trace-node": "^1.18.1",
+    "@opentelemetry/sdk-logs": "^0.45.1",
+    "@opentelemetry/resources": "^1.18.1",
+    "@opentelemetry/semantic-conventions": "^1.18.1",
+    "prom-client": "^15.1.0",
+    "winston": "^3.11.0"
+  }
+}
