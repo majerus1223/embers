@@ -19,6 +19,7 @@ COPY --from=builder /app/node_modules ./node_modules
 
 # Copy application files
 COPY package*.json ./
+COPY tracing.js ./
 COPY server.js ./
 COPY public ./public
 

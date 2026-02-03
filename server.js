@@ -1,23 +1,13 @@
-const { NodeSDK } = require('@opentelemetry/sdk-node');
-const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
-const { OTLPMetricExporter } = require('@opentelemetry/exporter-metrics-otlp-http');
-const { OTLPLogExporter } = require('@opentelemetry/exporter-logs-otlp-http');
-const { Resource } = require('@opentelemetry/resources');
-const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
-const { PeriodicExportingMetricReader } = require('@opentelemetry/sdk-metrics');
-const { diag, DiagConsoleLogger, DiagLogLevel } = require('@opentelemetry/api');
+// IMPORTANT: Initialize OpenTelemetry BEFORE requiring any other modules
+require('./tracing');
+
 const express = require('express');
 const path = require('path');
 const promClient = require('prom-client');
 const winston = require('winston');
 
-// Enable OpenTelemetry diagnostics (optional, for debugging)
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
-
 // Get configuration from environment
 const PORT = process.env.PORT || 3000;
-const OTEL_ENDPOINT = process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318';
 
 // Create Winston logger for structured logging
 const logger = winston.createLogger({
@@ -30,32 +20,6 @@ const logger = winston.createLogger({
     new winston.transports.Console()
   ],
 });
-
-// Configure OpenTelemetry SDK
-// Using environment variables: OTEL_EXPORTER_OTLP_ENDPOINT, OTEL_EXPORTER_OTLP_PROTOCOL, OTEL_SERVICE_NAME
-const sdk = new NodeSDK({
-  resource: new Resource({
-    [SemanticResourceAttributes.SERVICE_NAME]: process.env.OTEL_SERVICE_NAME || 'embers',
-    [SemanticResourceAttributes.SERVICE_VERSION]: '1.0.0',
-  }),
-  instrumentations: [getNodeAutoInstrumentations()],
-});
-
-sdk.start()
-  .then(() => {
-    logger.info('OpenTelemetry SDK started', {
-      endpoint: OTEL_ENDPOINT,
-      service: 'embers',
-      timestamp: new Date().toISOString()
-    });
-  })
-  .catch((error) => {
-    logger.error('Failed to start OpenTelemetry SDK', {
-      error: error.message,
-      stack: error.stack,
-      endpoint: OTEL_ENDPOINT
-    });
-  });
 
 // Setup Prometheus metrics for scraping
 const register = new promClient.Registry();
@@ -200,7 +164,6 @@ app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
     uptime: (Date.now() - startTime) / 1000,
-    otelEndpoint: OTEL_ENDPOINT,
   });
 });
 
@@ -208,24 +171,8 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
   logger.info('Embers server started', {
     port: PORT,
-    otel_endpoint: OTEL_ENDPOINT,
     timestamp: new Date().toISOString(),
   });
   console.log(`🔥 Embers running on http://localhost:${PORT}`);
   console.log(`📊 Metrics available at http://localhost:${PORT}/metrics`);
-  console.log(`🔭 OTEL endpoint: ${OTEL_ENDPOINT}`);
-});
-
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM received, shutting down gracefully');
-  sdk.shutdown()
-    .then(() => {
-      logger.info('OpenTelemetry SDK shut down successfully');
-      process.exit(0);
-    })
-    .catch((error) => {
-      logger.error('Error shutting down OpenTelemetry SDK', { error: error.message });
-      process.exit(1);
-    });
 });
