@@ -1,13 +1,13 @@
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
-const { ConsoleSpanExporter, SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
 const { Resource } = require('@opentelemetry/resources');
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
 const { diag, DiagConsoleLogger, DiagLogLevel } = require('@opentelemetry/api');
 
 // Enable OpenTelemetry diagnostics (optional, for debugging)
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+// Change to INFO or WARN to reduce verbosity, or remove entirely
+diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.WARN);
 
 // Get configuration from environment
 const OTEL_ENDPOINT = process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318';
@@ -17,9 +17,6 @@ const otlpExporter = new OTLPTraceExporter({
   url: `${OTEL_ENDPOINT}/v1/traces`,
   headers: {},
 });
-
-// Add console exporter for debugging
-const consoleExporter = new ConsoleSpanExporter();
 
 // Configure OpenTelemetry SDK - using traceExporter (not spanProcessor)
 // This will automatically create a BatchSpanProcessor for the OTLP exporter
@@ -34,13 +31,6 @@ const sdk = new NodeSDK({
 
 // Start the SDK
 sdk.start();
-
-// Add console span processor for debugging alongside the OTLP exporter
-const { trace } = require('@opentelemetry/api');
-const tracerProvider = trace.getTracerProvider();
-if (tracerProvider && tracerProvider.addSpanProcessor) {
-  tracerProvider.addSpanProcessor(new SimpleSpanProcessor(consoleExporter));
-}
 
 console.log(`🔭 OpenTelemetry SDK started`);
 console.log(`🔭 OTEL endpoint: ${OTEL_ENDPOINT}`);
