@@ -10,6 +10,21 @@ const { trace, context } = require('@opentelemetry/api');
 // Get configuration from environment
 const PORT = process.env.PORT || 3000;
 
+// Grafana Faro (browser RUM) runtime config. The collector URL is NOT
+// hardcoded in client code — it's supplied by the deployment env so it can
+// differ per environment / TLS setup. Falls back to the known Alloy
+// faro.receiver endpoint if unset.
+const APP_VERSION = process.env.APP_VERSION || require('./package.json').version;
+const FARO_CONFIG = {
+  // Faro collector, fronted by the Alloy ingress (TLS-terminated) and routed
+  // to the faro.receiver on alloy:12347.
+  url: process.env.FARO_COLLECTOR_URL || process.env.FARO_URL || 'https://alloy.sparks.majerus.dev/collect',
+  // Must be exactly 'embers' — the RUM backend filters everything by app_name.
+  name: 'embers',
+  version: APP_VERSION,
+  environment: process.env.FARO_ENVIRONMENT || process.env.NODE_ENV || 'production',
+};
+
 // Custom Winston format to inject OpenTelemetry trace context
 const traceFormat = winston.format((info) => {
   const span = trace.getSpan(context.active());
@@ -86,6 +101,16 @@ setInterval(() => {
 // Create Express app
 const app = express();
 app.use(express.json());
+
+// Expose the Faro config to the browser as `window.FARO_CONFIG`. Served
+// dynamically so the collector URL comes from the deployment env at runtime
+// (no rebuild needed), rather than being baked into the static assets.
+app.get('/faro-config.js', (req, res) => {
+  res.set('Content-Type', 'application/javascript');
+  res.set('Cache-Control', 'no-store');
+  res.send(`window.FARO_CONFIG = ${JSON.stringify(FARO_CONFIG)};`);
+});
+
 app.use(express.static('public'));
 
 // API endpoint to update flame count
@@ -189,4 +214,5 @@ app.listen(PORT, () => {
   });
   console.log(`🔥 Embers running on http://localhost:${PORT}`);
   console.log(`📊 Metrics available at http://localhost:${PORT}/metrics`);
+  console.log(`👁️  Faro RUM collector: ${FARO_CONFIG.url} (app=${FARO_CONFIG.name}@${FARO_CONFIG.version}, env=${FARO_CONFIG.environment})`);
 });

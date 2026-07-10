@@ -3,7 +3,25 @@
     "allow": [
       "Bash(docker build:*)",
       "Bash(docker tag:*)",
-      "Bash(docker push:*)"
+      "Bash(docker push:*)",
+      "WebFetch(domain:unpkg.com)",
+      "WebFetch(domain:registry.npmjs.org)",
+      "WebFetch(domain:app.unpkg.com)",
+      "Bash(node -e \"require\\('./package.json'\\)\")",
+      "Bash(node --check server.js)",
+      "Bash(node --check public/faro-init.js)",
+      "Bash(FARO_COLLECTOR_URL=\"http://alloy.majerus.dev:12347/collect\" NODE_ENV=production PORT=3939 node server.js)",
+      "Bash(echo \"started pid $!\")",
+      "Bash(curl -s http://localhost:3939/faro-config.js)",
+      "Bash(curl -s http://localhost:3939/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3939/faro-init.js)",
+      "Read(//tmp/**)",
+      "Bash(docker build *)",
+      "Bash(docker rm *)",
+      "Bash(docker run *)",
+      "Bash(curl -s http://localhost:3939/health)",
+      "Bash(curl -s -m 10 -H 'X-Scope-OrgID: 1' http://loki.sparks.majerus.dev/loki/api/v1/labels)",
+      "Bash(curl -s http://localhost:3939/faro-init.js)"
     ],
     "deny": [],
     "ask": []

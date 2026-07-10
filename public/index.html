@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Embers - Observability Test Generator</title>
+
+    <!-- Grafana Faro RUM — loaded early so it captures the full page lifecycle.
+         Runtime config (collector URL / version / environment) is served by the
+         backend at /faro-config.js and read from the deployment env. -->
+    <script src="/faro-config.js"></script>
+    <script src="https://unpkg.com/@grafana/faro-web-sdk@2.8.2/dist/bundle/faro-web-sdk.iife.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@grafana/faro-web-tracing@2.8.2/dist/bundle/faro-web-tracing.iife.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/rrweb@2.1.0/dist/rrweb.umd.min.cjs" crossorigin="anonymous"></script>
+    <script src="/faro-init.js"></script>
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
     <style>
         * {
