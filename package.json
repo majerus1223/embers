@@ -1,13 +1,19 @@
 {
   "name": "embers",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Observability test generator with animated flames",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js"
   },
-  "keywords": ["observability", "opentelemetry", "loki", "mimir", "tempo"],
+  "keywords": [
+    "observability",
+    "opentelemetry",
+    "loki",
+    "mimir",
+    "tempo"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {

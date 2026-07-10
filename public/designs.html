@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embers - Flame Designs</title>
+
+    <!-- Grafana Faro RUM — same bootstrap as the home page; faro-init.js maps
+         this path to view_name="designs" so navigation here shows up as a
+         journey step in the RUM plugin. -->
+    <script src="/faro-config.js"></script>
+    <script src="https://unpkg.com/@grafana/faro-web-sdk@2.8.2/dist/bundle/faro-web-sdk.iife.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@grafana/faro-web-tracing@2.8.2/dist/bundle/faro-web-tracing.iife.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/rrweb@2.1.0/dist/rrweb.umd.min.cjs" crossorigin="anonymous"></script>
+    <script src="/faro-init.js"></script>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            color: #f5f5f7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #ff6b35, #f7931e, #ff6b35);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #a1a1a6;
+            margin-bottom: 3rem;
+        }
+
+        .designs {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 900px;
+        }
+
+        .design-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            width: 160px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .design-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .design-card.selected {
+            border-color: #ff6b35;
+            background: rgba(255, 107, 53, 0.08);
+        }
+
+        .swatch {
+            height: 72px;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .swatch.classic { background: linear-gradient(135deg, #ff3b00, #ff9500, #ffd60a); }
+        .swatch.azure   { background: linear-gradient(135deg, #0a84ff, #40c8e0, #64d2ff); }
+        .swatch.emerald { background: linear-gradient(135deg, #1db954, #63e07a, #baf5c4); }
+        .swatch.violet  { background: linear-gradient(135deg, #7d2ae8, #bf5af2, #e39bff); }
+        .swatch.mono    { background: linear-gradient(135deg, #4a4a4e, #9a9aa0, #e5e5ea); }
+
+        .design-name {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .design-desc {
+            font-size: 0.8rem;
+            color: #a1a1a6;
+        }
+
+        .selected-note {
+            margin-top: 2.5rem;
+            font-size: 0.95rem;
+            color: #a1a1a6;
+            min-height: 1.4em;
+        }
+
+        .back {
+            margin-top: 1.5rem;
+            display: inline-block;
+            color: #ff6b35;
+            text-decoration: none;
+            font-size: 1.05rem;
+            padding: 0.75rem 1.5rem;
+            border: 1px solid rgba(255, 107, 53, 0.4);
+            border-radius: 999px;
+            transition: all 0.2s ease;
+        }
+
+        .back:hover {
+            background: rgba(255, 107, 53, 0.12);
+        }
+    </style>
+</head>
+<body>
+    <h1>Flame Designs</h1>
+    <p class="subtitle">Pick a palette — the flames on the home page will burn in it</p>
+
+    <div class="designs" id="designs">
+        <div class="design-card" data-design="classic">
+            <div class="swatch classic"></div>
+            <div class="design-name">Classic</div>
+            <div class="design-desc">Orange &amp; gold</div>
+        </div>
+        <div class="design-card" data-design="azure">
+            <div class="swatch azure"></div>
+            <div class="design-name">Azure</div>
+            <div class="design-desc">Gas-blue burn</div>
+        </div>
+        <div class="design-card" data-design="emerald">
+            <div class="swatch emerald"></div>
+            <div class="design-name">Emerald</div>
+            <div class="design-desc">Copper-salt green</div>
+        </div>
+        <div class="design-card" data-design="violet">
+            <div class="swatch violet"></div>
+            <div class="design-name">Violet</div>
+            <div class="design-desc">Potassium purple</div>
+        </div>
+        <div class="design-card" data-design="mono">
+            <div class="swatch mono"></div>
+            <div class="design-name">Mono</div>
+            <div class="design-desc">Ash &amp; smoke</div>
+        </div>
+    </div>
+
+    <p class="selected-note" id="selectedNote"></p>
+    <a class="back" href="/">← Back to the flames</a>
+
+    <script src="designs.js"></script>
+</body>
+</html>

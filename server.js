@@ -113,6 +113,11 @@ app.get('/faro-config.js', (req, res) => {
 
 app.use(express.static('public'));
 
+// Flame design picker page (a real second route so RUM journeys have steps).
+app.get('/designs', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'designs.html'));
+});
+
 // API endpoint to update flame count
 app.post('/api/flames', (req, res) => {
   const { count, action } = req.body;

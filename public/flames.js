@@ -4,6 +4,18 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// Flame palettes, keyed by the design chosen on /designs (per-browser,
+// localStorage; faro-init.js exposes it as window.EMBERS_DESIGN and reports it
+// as the flame-design feature flag).
+const PALETTES = {
+    classic: { hueBase: 0,   hueRange: 60, sat: 100 }, // red → yellow
+    azure:   { hueBase: 190, hueRange: 40, sat: 100 }, // gas-blue
+    emerald: { hueBase: 100, hueRange: 50, sat: 90 },  // green
+    violet:  { hueBase: 260, hueRange: 45, sat: 95 },  // purple
+    mono:    { hueBase: 0,   hueRange: 0,  sat: 0 },   // ash & smoke
+};
+const palette = PALETTES[window.EMBERS_DESIGN] || PALETTES.classic;
+
 // State
 let flameCount = 10;
 let flames = [];
@@ -32,7 +44,7 @@ class Flame {
                 vy: -Math.random() * 3 - 2,
                 life: 1,
                 size: Math.random() * 8 + 2,
-                hue: Math.random() * 60 + 0, // Red to yellow
+                hue: palette.hueBase + Math.random() * palette.hueRange,
             });
         }
     }
@@ -64,9 +76,9 @@ class Flame {
 
             // Create gradient
             const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
-            gradient.addColorStop(0, `hsla(${p.hue}, 100%, 70%, 1)`);
-            gradient.addColorStop(0.5, `hsla(${p.hue + 20}, 100%, 60%, 0.6)`);
-            gradient.addColorStop(1, `hsla(${p.hue + 40}, 100%, 50%, 0)`);
+            gradient.addColorStop(0, `hsla(${p.hue}, ${palette.sat}%, 70%, 1)`);
+            gradient.addColorStop(0.5, `hsla(${p.hue + 20}, ${palette.sat}%, 60%, 0.6)`);
+            gradient.addColorStop(1, `hsla(${p.hue + 40}, ${palette.sat}%, 50%, 0)`);
 
             ctx.fillStyle = gradient;
             ctx.beginPath();

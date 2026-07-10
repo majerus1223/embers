@@ -5,8 +5,10 @@ An observability test generator that creates traces, logs, and metrics for testi
 ## Features
 
 - **Interactive Flame Visualization**: Dark-themed UI with animated flames
+- **Flame Designs** (`/designs`): pick a palette (classic/azure/emerald/violet/mono) — per-browser, applied to the flames on the home page
 - **OpenTelemetry Integration**: Pushes traces, logs, and metrics to OTEL collector endpoint
 - **Prometheus Metrics**: Exposes `/metrics` endpoint for scraping
+- **Full RUM instrumentation** (Grafana Faro → `FARO_URL` collector): errors, web vitals, distributed traces, rrweb session replay, pseudonymous user identity, per-page view names (`flames`/`designs` → journeys), the flame design reported as a `flame-design` feature flag, and click actions with rage/dead/error frustration detection
 - **Configurable Data Volume**: More flames generate more observability data
 - **Kubernetes Ready**: Includes deployment manifests with health checks
 
